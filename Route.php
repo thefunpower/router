@@ -256,7 +256,6 @@ class IRoute{
 	 	/**
 	 	*	对于未使用正则的路由匹配到直接goto
 	 	*/
-		//$this->_value = isset(static::$router[$this->method][$action])&&static::$router[$this->method][$action]?:false; 
 	 	if(isset(static::$router[$this->method][$action])&&static::$router[$this->method][$action]){
 	 		$this->_value = static::$router[$this->method][$action]; 
 	 	}
@@ -266,7 +265,7 @@ class IRoute{
 		
 		$data = []; 
 		if($this->_value) goto TODO; 
-		if(!static::$router[$this->method]) goto NEXT;
+		if(!isset(static::$router[$this->method])) goto NEXT;
 		foreach(static::$router[$this->method] as $pre=>$class){  
 			if(preg_match_all($this->match, $pre, $out)){
 				//转成正则   
