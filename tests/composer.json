@@ -1,0 +1,14 @@
+{ 
+    "require": { 
+        "thefunpower/router": "dev-main"
+    },   
+    "require-dev": { 
+    },   
+    "autoload": {
+        "psr-4": {
+            "core\\": "core",
+            "app\\": "app",
+            "modules\\": "modules"
+        }
+    }
+}

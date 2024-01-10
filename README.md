@@ -56,6 +56,35 @@ IRoute::get('post/<id:\d+>|post',function(){
 },'@post|$po');
 ~~~
 
+## 多模块
+
+加载顺序 `core` `app` `modules`
+
+~~~
+<?php 
+namespace core\user\controller;
+
+class site{
+	
+	public function action_index(){
+		echo 'core';
+	}
+}
+~~~
+
+~~~
+<?php 
+namespace app\user\controller;
+
+class site{
+
+	public function action_index(){
+		echo 111;
+	}
+}
+
+~~~
+ 
 
 ## LICENSE
 
