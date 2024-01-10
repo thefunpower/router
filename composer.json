@@ -1,0 +1,20 @@
+{
+    "name": "thefunpower/router",
+    "type": "library",
+    "description": "路由",
+    "keywords": ["php"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ken.sun",
+            "email": "sunkangchina@163.com" 
+        }
+    ],
+    "require": { 
+    }, 
+    "autoload": { 
+        "files": [ 
+            "./Route.php"
+        ]
+    }
+}
