@@ -2,6 +2,12 @@
  
 路由
 
+## 安装
+
+~~~
+composer require thefunpower/router
+~~~
+
 ## 开始
 ~~~
 $time_start = microtime(true);
@@ -18,7 +24,13 @@ try {
 } 
 ~~~
 
-更多规则
+## 生成URL
+
+~~~
+IRouter::create_url($url,$par = []);
+~~~
+
+## 更多规则
 
 ~~~ 
 IRoute::get('/',function(){
