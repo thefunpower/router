@@ -8,6 +8,37 @@
 composer require thefunpower/router
 ~~~
 
+路由加载优先级 `core` > `app` > `modules`
+
+## 目录
+
+~~~
+core/user/controller/site.php
+app/invoice/controller/site.php
+~~~
+
+演示代码
+
+~~~
+<?php 
+namespace app\user\controller;
+
+class site{ 
+
+	public function action_index(){
+		return 'site';
+	} 
+
+}
+~~~
+
+需要返回jsons数据可用
+
+~~~
+return ['data'=>''];
+~~~
+
+
 ## 开始
 ~~~
 IRoute::get('/',function(){
@@ -78,6 +109,18 @@ Route::get('post/<id:\d+>|post',function(){
 },'@post');
 IRoute::get('post/<id:\d+>|post',function(){    
 },'@post|$po');
+~~~
+
+## composer 
+
+~~~
+"autoload": {
+    "psr-4": {
+        "core\\": "core",
+        "app\\": "app",
+        "modules\\": "modules"
+    }
+}
 ~~~
 
 
