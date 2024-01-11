@@ -30,7 +30,13 @@ class IRouteBase
     //当前域名　
     public static $current_domain;
     public static $err;
-    public static $status; 
+    public static $status;
+    /**
+    * 控制器名称
+    * strtolower
+    * ucfirst
+    */
+    public static $controller_name = 'strtolower';
     /**
     * 初始化
     */
@@ -44,25 +50,24 @@ class IRouteBase
     /**
     * 执行路由
     */
-    public static function do($ok=null,$not_find = null){
+    public static function do($ok = null, $not_find = null)
+    {
         $IRoute = IRoute::run();
-        $err    = IRoute::$err; 
-        if(self::$status == 'ok'){
-            echo $IRoute;  
+        $err = IRoute::$err;
+        if(self::$status == 'ok') {
+            echo $IRoute;
             $ok();
         } else {
-            if($err){
+            if($err) {
                 //未找到路由
                 $not_find();
             }
-        } 
+        }
     }
     /**
     * 处理对象
     */
-    public static function do_object($res){
-
-    } 
+    public static function do_object($res) {}
     /**
     * uri
     */
@@ -149,20 +154,20 @@ class IRouteBase
     }
     /**
     * 取得控制器的 model id action
-    * [_id] => module/admin/admin
     * [action] => login
     * [module] => admin
-    * [id] => admin
+    * [package] => core
+    * [controller] => site
     */
     public static function get_action()
     {
         $ar = static::init()->class;
         $id = str_replace('\\', '/', $ar[0]);
-        $arr = explode("/",$id); 
-        $vo['action'] = $ar[1]; 
-        $vo['package'] = $arr[0]; 
-        $vo['module']  = $arr[1]; 
-        $vo['controller'] = $arr[3]; 
+        $arr = explode("/", $id);
+        $vo['action'] = $ar[1];
+        $vo['package'] = $arr[0];
+        $vo['module'] = $arr[1];
+        $vo['controller'] = strtolower($arr[3]);
         return $vo;
     }
     /**
@@ -171,14 +176,14 @@ class IRouteBase
     protected function set_router($url, $do, $method = 'GET', $name = null)
     {
 
-        if(is_string($do)){
-            $do = str_replace("/","\\",$do);
-            if(!$name && strpos($do,'@') !== false){
-                $name = str_replace("\\controller","",$do);
-                $name = str_replace("\\","/",$name);
-                $name = substr($name,strpos($name,'/')+1);
-                $name = str_replace("@","/",$name); 
-            } 
+        if(is_string($do)) {
+            $do = str_replace("/", "\\", $do);
+            if(!$name && strpos($do, '@') !== false) {
+                $name = str_replace("\\controller", "", $do);
+                $name = str_replace("\\", "/", $name);
+                $name = substr($name, strpos($name, '/') + 1);
+                $name = str_replace("@", "/", $name);
+            }
         }
         if(strpos($url, '|') !== false) {
             $arr = explode('|', $url);
@@ -208,16 +213,13 @@ class IRouteBase
         if($name) {
             static::$router['__#named#__'][$name] = $url;
         }
-    } 
-    /**
-    *  生成URL
-    */
+    } /** * 生成URL */
     public static function url($url, $par = [])
     {
         return static::init()->create_url($url, $par);
     }
     /**
-    *  生成URL
+    * 生成URL
     */
     protected function create_url($url, $par = [])
     {
@@ -238,10 +240,10 @@ class IRouteBase
         if($b) {
             $i = 0;
             foreach($b as $v) {
-                if(isset($a[$i]) && isset($par[$v])){
-                   $r = str_replace($a[$i], $par[$v], $r);
-                   unset($par[$v]); 
-                } 
+                if(isset($a[$i]) && isset($par[$v])) {
+                    $r = str_replace($a[$i], $par[$v], $r);
+                    unset($par[$v]);
+                }
                 $i++;
             }
         }
@@ -374,7 +376,7 @@ class IRouteBase
             $this->_value = str_replace('/', '\\', $this->_value);
             $cls = explode('@', $this->_value);
             $class = $cls[0];
-            if($data) { 
+            if($data) {
                 foreach($data as $k => $v) {
                     $class = str_replace("$" . $k, $v, $class);
                 }
@@ -384,29 +386,29 @@ class IRouteBase
         }
         //加载app\admin\login.php 这类的自动router
         $action = trim(str_replace('/', ' ', $action));
-        $a = explode(' ', $action); 
+        $a = explode(' ', $action);
         $classes = [];
         if(isset($a[0])) {
-        	foreach(static::$r as $r){
-        		$class = $r . "\\" . $a[0];
-	            if(isset($a[1])) {
-	                $class = $class . "\\controller\\" . $a[1];
-	            } 
-	            $classes[] = $class;
-        	} 
-        } 
+            foreach(static::$r as $r) {
+                $class = $r . "\\" . $a[0];
+                if(isset($a[1])) {
+                    $class = $class . "\\controller\\" . $a[1];
+                }
+                $classes[] = $class;
+            }
+        }
         if(isset($a[2]) && $a[2]) {
             $ac = $a[2];
         } else {
             $ac = 'index';
         }
-        foreach($classes as $class){
-        	$res = $this->load_route($class, $ac, $data);
-        	if($res !== false){
+        foreach($classes as $class) {
+            $res = $this->load_route($class, $ac, $data);
+            if($res !== false) {
                 self::$status = 'ok';
-        		return $res;
-        	}
-        } 
+                return $res;
+            }
+        }
     }
     /**
     * 建议内部使用
@@ -419,35 +421,40 @@ class IRouteBase
     * 内部函数，支持框架内部框架
     */
     protected function load_route($class, $ac, $data)
-    { 
+    {
+        $a = substr($class, 0, strrpos($class, '\\'));
+        $b = substr($class, strrpos($class, '\\') + 1);
+        $fun = IRoute::$controller_name;
+        $b = $fun($b);
+        $class = $a . "\\" . $b;
         $this->class = [$class, $ac];
-        static::$current_class = $class; 
-        if(!class_exists($class)){
-            self::$err[] = $class." not exists ";
-        	return false;
-        } 
+        static::$current_class = $class;
+        if(!class_exists($class)) {
+            self::$err[] = $class . " not exists ";
+            return false;
+        }
         $obj = new $class();
-        if(method_exists($class, 'before')) { 
-            call_user_func_array([$obj,"before"],$data);
+        if(method_exists($class, 'before')) {
+            call_user_func_array([$obj,"before"], $data);
         }
         $res = '';
-        if(method_exists($class, "action_".$ac)) {
-            $res = call_user_func_array([$obj,"action_".$ac],[]); 
+        if(method_exists($class, "action_" . $ac)) {
+            $res = call_user_func_array([$obj,"action_" . $ac], []);
             self::$err = "";
-            if($res){ 
-                if(is_array($res)){
-                    echo json_encode($res,JSON_UNESCAPED_UNICODE);
-                }else if(is_string($res)){
+            if($res) {
+                if(is_array($res)) {
+                    echo json_encode($res, JSON_UNESCAPED_UNICODE);
+                } elseif(is_string($res)) {
                     echo $res;
-                } else if(is_object($res)){
+                } elseif(is_object($res)) {
                     static::do_object($res);
                 }
             }
-        }  
+        }
         if(method_exists($class, 'after')) {
-            call_user_func_array([$obj,"after"],[]);
-        } 
-    }  
+            call_user_func_array([$obj,"after"], []);
+        }
+    }
     /**
     * 内部函数 ，对array_combine优化
     */

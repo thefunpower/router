@@ -29,6 +29,14 @@ return IRoute::do(function(){
 IRouter::create_url($url,$par = []);
 ~~~
 
+## 控制器名称
+
+默认全小写，如需改成首字母大写
+
+~~~
+IRouter::$controller_name = 'ucfirst';
+~~~
+
 ## 更多规则
 
 ~~~ 
