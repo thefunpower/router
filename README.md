@@ -20,7 +20,24 @@ return IRoute::do(function(){
 },function(){
 	//路由不存在
 	echo '路由不存在';
+	//取具体错误信息
+	pr(IRoute::$err);
 }); 
+~~~
+
+## 取当前的模块、控制器、动作
+~~~ 
+protected $package;
+protected $module;
+protected $controller;
+protected $action;
+
+$route = IRoute::get_action();
+$this->package = $route['package'];
+$this->module = $route['module'];
+$this->controller = $route['controller'];
+$this->action = $route['action'];
+$model = $this->model;
 ~~~
 
 ## 生成URL
