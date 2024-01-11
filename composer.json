@@ -14,7 +14,8 @@
     }, 
     "autoload": { 
         "files": [ 
-            "./Route.php"
+            "./IRouteBase.php"
+            "./IRoute.php",
         ]
     }
 }
