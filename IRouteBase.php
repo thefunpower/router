@@ -87,7 +87,6 @@ class IRouteBase
         //解析URL $uri 返回 /app/public/ 或 /
         $uri = $_SERVER['REQUEST_URI'];
         $uri = str_replace("//", '/', $uri);
-        $uri = str_replace(static::host(), '', $uri);
         if(strpos($uri, '?') !== false) {
             $uri = substr($uri, 0, strpos($uri, '?'));
         }
@@ -321,14 +320,14 @@ class IRouteBase
         //解析URL $uri 返回 /app/public/ 或 /
         $uri = static::_uri();
         //取得入口路径
-        $index = $_SERVER['SCRIPT_NAME'];
+        $index = static::server_name();
         $index = substr($index, 0, strrpos($index, '/'));
         $action = substr($uri, strlen($index));
         $this->base_url = $index ? $index . '/' : '/';
         /**
         * 对于未使用正则的路由匹配到直接goto
         */
-        if(isset(static::$router[$this->method][$action]) && static::$router[$this->method][$action]) {
+        if(isset(static::$router[$this->method][$action])) {
             $this->_value = static::$router[$this->method][$action];
         } else {
             $this->_value = false;
@@ -430,7 +429,7 @@ class IRouteBase
         $this->class = [$class, $ac];
         static::$current_class = $class;
         if(!class_exists($class)) {
-            self::$err[] = $class . " not exists ";
+            self::$err[] = "class 【" . $class . "】 not exists ";
             return false;
         }
         $obj = new $class();
@@ -450,6 +449,8 @@ class IRouteBase
                     static::do_object($res);
                 }
             }
+        } else {
+            self::$err[] = "action 【action_" . $ac . "】 not exists ";
         }
         if(method_exists($class, 'after')) {
             call_user_func_array([$obj,"after"], []);
