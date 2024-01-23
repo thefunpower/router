@@ -193,16 +193,11 @@ class IRouteBase
             }
             $i = 0;
             foreach($arr as $v) {
-                $this->set_router($v, $do, $method, $names[$i]);
+                $this->set_router($v, $do, $method, $names[$i]??'');
                 $i++;
             }
             return;
-        }
-        if(!is_object($do) && !$name) {
-            $n = str_replace('@', '/', $do);
-            $new = str_replace('\\', '/', $n);
-            $name = substr($new, strpos($new, '/') + 1);
-        }
+        } 
         if(strpos($url, '<') !== false) {
             $url = "#^\/{$url}\$#" ;
         } elseif(substr($url, 0, 1) != '/') {
@@ -212,7 +207,8 @@ class IRouteBase
         if($name) {
             static::$router['__#named#__'][$name] = $url;
         }
-    } /** * 生成URL */
+    } 
+    /** * 生成URL */
     public static function url($url, $par = [])
     {
         return static::init()->create_url($url, $par);
