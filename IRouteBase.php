@@ -179,11 +179,11 @@ class IRouteBase
             }
             $i = 0;
             foreach($arr as $v) {
-                $this->set_router($v, $do, $method, $names[$i]??'');
+                $this->set_router($v, $do, $method, $names[$i] ?? '');
                 $i++;
             }
             return;
-        } 
+        }
         if(strpos($url, '<') !== false) {
             $url = "#^\/{$url}\$#" ;
         } elseif(substr($url, 0, 1) != '/') {
@@ -193,8 +193,7 @@ class IRouteBase
         if($name) {
             static::$router['__#named#__'][$name] = $url;
         }
-    } 
-    /** * 生成URL */
+    } /** * 生成URL */
     public static function url($url, $par = [])
     {
         return static::init()->create_url($url, $par);
@@ -351,7 +350,8 @@ class IRouteBase
             TODO:
             // 如果是 closure
             if(is_object($this->_value) || ($this->_value instanceof Closure)) {
-                return call_user_func_array($this->_value, $data);
+                $res = call_user_func_array($this->_value, $data);
+                return $this->output($res);
             }
             // 对 namespace 进行路由
             $this->_value = str_replace('/', '\\', $this->_value);
@@ -423,19 +423,26 @@ class IRouteBase
             $res = call_user_func_array([$obj,"action_" . $ac], []);
             self::$err = "";
             if($res) {
-                if(is_array($res)) {
-                    echo json_encode($res, JSON_UNESCAPED_UNICODE);
-                } elseif(is_string($res)) {
-                    echo $res;
-                } elseif(is_object($res)) {
-                    static::do_object($res);
-                }
+                return $this->output($res);
             }
         } else {
             self::$err[] = "action 【action_" . $ac . "】 not exists ";
         }
         if(method_exists($class, 'after')) {
             call_user_func_array([$obj,"after"], []);
+        }
+    }
+    /**
+    * 输出
+    */
+    protected function output($res)
+    {
+        if(is_array($res)) {
+            echo json_encode($res, JSON_UNESCAPED_UNICODE);
+        } elseif(is_string($res)) {
+            echo $res;
+        } elseif(is_object($res)) {
+            return static::do_object($res);
         }
     }
     /**
