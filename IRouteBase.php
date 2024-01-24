@@ -471,12 +471,6 @@ class IRouteBase
             case 'POST':
                 $_POST = array_merge($data, $_POST);
                 break;
-            case 'PUT':
-                $_PUT = array_merge($data, $_PUT);
-                break;
-            case 'DELETE':
-                $_PUT = array_merge($data, $_DELETE);
-                break;
         }
         return $data;
     }
