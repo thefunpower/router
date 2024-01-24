@@ -138,20 +138,6 @@ class IRouteBase
         call_user_func($fun);
     }
     /**
-    * 返回当前　模块　控制器　动作　以 / 相连的字符串
-    */
-    public static function string()
-    {
-        $id = static::controller();
-        $m = $id['module'];
-        $str = $id['id'];
-        $i = $id['action'];
-        if($m) {
-            $str = $m . '/' . $str;
-        }
-        return $str . '/' . $i;
-    }
-    /**
     * 取得控制器的 model id action
     * [action] => login
     * [module] => admin
