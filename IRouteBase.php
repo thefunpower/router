@@ -438,7 +438,7 @@ class IRouteBase
     protected function output($res)
     {
         if(is_array($res)) {
-            header('Content-Type: application/json; charset=utf-8');
+            header('content-type:application/json'); 
             echo json_encode($res, JSON_UNESCAPED_UNICODE);
             exit;
         } elseif(is_string($res)) {
