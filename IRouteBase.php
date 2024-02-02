@@ -416,20 +416,22 @@ class IRouteBase
         }
         $obj = new $class();
         if(method_exists($class, 'before')) {
-            call_user_func_array([$obj,"before"], $data);
+            $obj->before();
         }
         $res = '';
         if(method_exists($class, "action_" . $ac)) {
-            $res = call_user_func_array([$obj,"action_" . $ac], []);
-            self::$err = "";
+            $action = "action_" . $ac;
+            $res = $obj->$action();
+            self::$err = [];
             if($res) {
                 return $this->output($res);
             }
         } else {
             self::$err[] = "action 【action_" . $ac . "】 not exists ";
+            return false;
         }
         if(method_exists($class, 'after')) {
-            call_user_func_array([$obj,"after"], []);
+            $obj->after();
         }
     }
     /**
@@ -438,7 +440,7 @@ class IRouteBase
     protected function output($res)
     {
         if(is_array($res)) {
-            header('content-type:application/json'); 
+            header('content-type:application/json');
             echo json_encode($res, JSON_UNESCAPED_UNICODE);
             exit;
         } elseif(is_string($res)) {
