@@ -6,6 +6,7 @@
  */
 class IRouteBase
 {
+    public static $pre = '';
     //基础URL
     public $base_url;
     protected $method;
@@ -87,6 +88,9 @@ class IRouteBase
         //解析URL $uri 返回 /app/public/ 或 /
         $uri = $_SERVER['REQUEST_URI'];
         $uri = str_replace("//", '/', $uri);
+        if(self::$pre){
+            $uri = substr($uri,strlen(self::$pre)+1);
+        } 
         if(strpos($uri, '?') !== false) {
             $uri = substr($uri, 0, strpos($uri, '?'));
         }
