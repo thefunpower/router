@@ -10,6 +10,16 @@ composer require thefunpower/router
 
 路由加载优先级 `core` > `app` > `modules`
 
+## rewrite
+
+~~~
+location / {
+  if (!-e $request_filename){
+    rewrite ^(.*)$ /index.php last;
+  }
+}
+~~~
+
 ## 目录
 
 ~~~
